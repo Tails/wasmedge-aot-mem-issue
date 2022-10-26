@@ -1,12 +1,12 @@
-# build after changing the base image
-build:
-	docker-compose build wasmedge
-
 # run when the base image hasnt changed
 run:
 	docker-compose up \
 		--no-recreate \
 		wasmedge
+
+# build after changing the base image
+build:
+	docker-compose build wasmedge
 
 run-normal:
 	docker-compose up \

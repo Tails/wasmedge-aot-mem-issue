@@ -9,9 +9,6 @@ use std::sync::{Arc, Mutex};
 use tokio::sync::mpsc::{Receiver, Sender, UnboundedReceiver, UnboundedSender};
 use std::thread;
 use anyhow::anyhow;
-use crate::{CanvasRPC};
-
-use crate::HtmlCanvasApi;
 
 // the initial canvas height before we clip it
 const PRE_CLIP_CANVAS_HEIGHT : u32 = 600;
@@ -34,26 +31,17 @@ const PRERENDERER_WASM_MODULE_ENTRYPOINT : &str = "_start";
 // command name for setting canvas size
 const CMD_RENDER_WIDTH : &str = "set_render_width";
 
+#[derive(Clone, Debug)]
+pub enum CanvasRPC {
+    // todo: this should be taken into the tx<>, not here
+    Quit,
+}
+
 // create vm config
 fn config() -> Config {
-    let common_options = CommonConfigOptions::default()
-        // .bulk_memory_operations(true)
-        // .multi_value(true)
-        // .mutable_globals(true)
-        // .non_trap_conversions(true)
-        // .reference_types(true)
-        // .sign_extension_operators(true)
-        // .simd(true)
-        // .multi_memories(true)
-    ;
+    let common_options = CommonConfigOptions::default();
 
-    let compiler_options = CompilerConfigOptions::default()
-        // .dump_ir(true)
-        // .generic_binary(true)
-        // .interruptible(true)
-        // .optimization_level(CompilerOptimizationLevel::O3)
-        // .out_format(CompilerOutputFormat::Native)
-        ;
+    let compiler_options = CompilerConfigOptions::default();
 
     let host_reg_options = HostRegistrationConfigOptions::new()
         .wasi(true);
@@ -78,83 +66,12 @@ fn read_string(mem_ref: wasmedge_sys::instance::memory::Memory, offset: &WasmVal
 }
 
 fn parse_cmd(cmd: String, args: Vec<WasmValue>, mem: Option<Memory>) -> anyhow::Result<CanvasRPC> {
-    macro_rules! single_string {
-        ($fn:ident) => {
-            {let stringarg = read_string(
-                mem.expect("memory should have been retrieved!"),
-                &args[0],
-                &args[1]
-            )?;
-
-            println!("read {} string arg from memory: {}", stringify!($fn), &stringarg);
-
-            stringarg.to_string()}
-        }
-    };
     Ok(match cmd.as_str() {
         // command to close channel (or it hangs)
         // todo: dont parse into rpc enum but pass through channel
         CHANNEL_CLOSE_CMD => CanvasRPC::Quit,
 
-        // init canvas
-        CMD_RENDER_WIDTH => CanvasRPC::Init(args.first().ok_or(anyhow!("did not receive render width arg"))?.to_i64() as u32),
-
-        // todo: somehow generate these bindings through def_fn_callback!() ?
-        // todo: translate() not used?
-
-        // no arg functions
-        "save" => CanvasRPC::Save,
-        "restore" => CanvasRPC::Restore,
-        "begin_path" => CanvasRPC::BeginPath,
-        "close_path" => CanvasRPC::ClosePath,
-        "stroke" => CanvasRPC::Stroke,
-        "fill" => CanvasRPC::Fill,
-
-        // x,y point args
-        "scale" => CanvasRPC::Scale(args[0].to_f64(), args[1].to_f64()),
-        "resize" => CanvasRPC::Resize(args[0].to_f64(), args[1].to_f64()),
-        "move_to" => CanvasRPC::MoveTo(args[0].to_f64(), args[1].to_f64()),
-        "line_to" => CanvasRPC::LineTo(args[0].to_f64(), args[1].to_f64()),
-
-        // f64 float arg
-        "shadow_blur" => CanvasRPC::ShadowBlur(args[0].to_f64()),
-        "line_width" => CanvasRPC::LineWidth(args[0].to_f64()),
-
-        // x, y, w, h
-        "fill_rect" => CanvasRPC::FillRect(args[0].to_f64(), args[1].to_f64(), args[2].to_f64(), args[3].to_f64()),
-        "rect" => CanvasRPC::Rect(args[0].to_f64(), args[1].to_f64(), args[2].to_f64(), args[3].to_f64()),
-        "clear_rect" => CanvasRPC::ClearRect(args[0].to_f64(), args[1].to_f64(), args[2].to_f64(), args[3].to_f64()),
-
-        // (f64, f64, f64, f64, f64, u8)
-        "arc" => CanvasRPC::Arc(args[0].to_f64(), args[1].to_f64(), args[2].to_f64(), args[3].to_f64(), args[4].to_f64(), args[5].to_i32() != 0),
-
-        "bezier_curve_to" => CanvasRPC::BezierCurveTo(args[0].to_f64(), args[1].to_f64(), args[2].to_f64(), args[3].to_f64(), args[4].to_f64(), args[5].to_f64()),
-        "quadratic_curve_to" => CanvasRPC::QuadraticCurveTo(args[0].to_f64(), args[1].to_f64(), args[2].to_f64(), args[3].to_f64()),
-
-        // (i32, u8, f64, f64)
-        "fill_text" => {
-            let stringarg = read_string(
-                mem.expect("memory should have been retrieved!"),
-                &args[0],
-                &args[1]
-            )?;
-
-            println!("read fill_text string arg from memory: {}", &stringarg);
-
-            CanvasRPC::FillText(stringarg, args[2].to_f64(), args[3].to_f64())
-        },
-
-        // (i32, u8)
-        "fill_style" => CanvasRPC::FillStyle(single_string!(fill_style)),
-        "background_fill_style" => CanvasRPC::BackgroundFillStyle(single_string!(background_fill_style)),
-        "stroke_style" => CanvasRPC::StrokeStyle(single_string!(stroke_style)),
-        "font" => CanvasRPC::Font(single_string!(font)),
-        "shadow_color" => CanvasRPC::ShadowColor(single_string!(shadow_color)),
-        "line_cap" => CanvasRPC::LineCap(single_string!(line_cap)),
-        "line_dash" => {
-            todo!();
-            CanvasRPC::LineDash(vec!())
-        },
+        // ... left out variants
 
         // if we forgot something
         _ => panic!("unrecognized command! {}", cmd)

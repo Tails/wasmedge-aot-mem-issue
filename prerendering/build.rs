@@ -23,16 +23,7 @@ const OPT_LEVEL: CompilerOptimizationLevel
 
 // create vm config
 fn config() -> Config {
-    let common_options = CommonConfigOptions::default()
-        // .bulk_memory_operations(true)
-        // .multi_value(true)
-        // .mutable_globals(true)
-        // .non_trap_conversions(true)
-        // .reference_types(true)
-        // .sign_extension_operators(true)
-        // .simd(true)
-        // .multi_memories(true)
-        ;
+    let common_options = CommonConfigOptions::default();
 
     let compiler_options = CompilerConfigOptions::default()
         .dump_ir(false)

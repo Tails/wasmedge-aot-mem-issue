@@ -3,19 +3,12 @@
 #![feature(never_type)]
 
 mod run;
-pub mod canvas;
-
-use canvas::*;
 
 pub const WASM_BLOB_INTERPRETED_PATH: &'static str
     = "../prerendering_wasm/dist/prerendering_wasm.wasm";
 
 pub const WASM_BLOB_AOT_PATH: &'static str
     = "../prerendering_wasm/dist/prerendering_wasm_aot.so";
-
-// fn main() {
-//     crate::run::run();
-// }
 
 #[tokio::test]
 async fn test_interpreted() {

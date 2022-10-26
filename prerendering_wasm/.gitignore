@@ -1,0 +1,4 @@
+input.json
+/dist/
+*.wasm
+elm.js

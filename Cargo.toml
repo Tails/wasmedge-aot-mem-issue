@@ -1,0 +1,25 @@
+[patch.crates-io]
+pathfinder_geometry = { commit="9e0331742dedfed41d9e7791a9afbead0e0fbcd5", git = "https://github.com/servo/pathfinder" }
+pathfinder_canvas = { commit="9e0331742dedfed41d9e7791a9afbead0e0fbcd5", git = "https://github.com/servo/pathfinder" }
+pathfinder_renderer = { commit="9e0331742dedfed41d9e7791a9afbead0e0fbcd5", git = "https://github.com/servo/pathfinder" }
+pathfinder_content = { commit="9e0331742dedfed41d9e7791a9afbead0e0fbcd5", git = "https://github.com/servo/pathfinder" }
+pathfinder_simd = { commit="9e0331742dedfed41d9e7791a9afbead0e0fbcd5", git = "https://github.com/servo/pathfinder" }
+pathfinder_gl = { commit="9e0331742dedfed41d9e7791a9afbead0e0fbcd5", git = "https://github.com/servo/pathfinder" }
+pathfinder_webgl = { commit="9e0331742dedfed41d9e7791a9afbead0e0fbcd5", git = "https://github.com/servo/pathfinder" }
+pathfinder_gpu = { commit="9e0331742dedfed41d9e7791a9afbead0e0fbcd5", git = "https://github.com/servo/pathfinder" }
+pathfinder_resources = { commit="9e0331742dedfed41d9e7791a9afbead0e0fbcd5", git = "https://github.com/servo/pathfinder" }
+pathfinder_color = { commit="9e0331742dedfed41d9e7791a9afbead0e0fbcd5", git = "https://github.com/servo/pathfinder" }
+pathfinder_lottie = { commit="9e0331742dedfed41d9e7791a9afbead0e0fbcd5", git = "https://github.com/servo/pathfinder" }
+pathfinder_magicleap_demo = { commit="9e0331742dedfed41d9e7791a9afbead0e0fbcd5", git = "https://github.com/servo/pathfinder" }
+pathfinder_ui = { commit="9e0331742dedfed41d9e7791a9afbead0e0fbcd5", git = "https://github.com/servo/pathfinder" }
+pathfinder_svg = { commit="9e0331742dedfed41d9e7791a9afbead0e0fbcd5", git = "https://github.com/servo/pathfinder" }
+pathfinder_metal = { commit="9e0331742dedfed41d9e7791a9afbead0e0fbcd5", git = "https://github.com/servo/pathfinder" }
+pathfinder_swf = { commit="9e0331742dedfed41d9e7791a9afbead0e0fbcd5", git = "https://github.com/servo/pathfinder" }
+pathfinder_text = { commit="9e0331742dedfed41d9e7791a9afbead0e0fbcd5", git = "https://github.com/servo/pathfinder" }
+pathfinder_web_canvas = { commit="9e0331742dedfed41d9e7791a9afbead0e0fbcd5", git = "https://github.com/servo/pathfinder" }
+
+[workspace]
+members = [
+  "./prerendering",
+  "./prerendering_wasm",
+]

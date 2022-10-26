@@ -1,0 +1,10 @@
+version: '3'
+
+# runtime for building and running
+services:
+  wasmedge:
+    build: .
+    working_dir: /app/prerendering
+    command: ["make", "test"]
+    volumes:
+      - ${PWD}:/app

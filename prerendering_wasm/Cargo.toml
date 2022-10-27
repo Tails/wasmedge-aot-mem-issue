@@ -3,9 +3,6 @@ name = "prerendering_wasm"
 version = "0.1.0"
 edition = "2021"
 
-#[lib]
-#crate-type = ["cdylib"]
-
 [[bin]]
 name = "prerendering_wasm"
 path = "src/main.rs"
@@ -13,15 +10,5 @@ path = "src/main.rs"
 [build]
 target = "wasm32-wasi"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]
-wasmedge_quickjs = {git = "https://github.com/second-state/wasmedge-quickjs"}
-wasmedge-bindgen = "0.4.0"
-wasmedge-bindgen-macro = "0.4.0"
-
-indoc = "1.0.7"
-lazy_static = "1.4.0"
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-anyhow = "1.0"
+[profile.release]
+lto = true

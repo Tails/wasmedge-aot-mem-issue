@@ -10,9 +10,6 @@ use tokio::sync::mpsc::{Receiver, Sender, UnboundedReceiver, UnboundedSender};
 use std::thread;
 use anyhow::anyhow;
 
-// the initial canvas height before we clip it
-const PRE_CLIP_CANVAS_HEIGHT : u32 = 600;
-
 // name of the command sent over the mspc channel to make it close
 const CHANNEL_CLOSE_CMD: &str = "quit";
 
@@ -27,9 +24,6 @@ const PRERENDERER_WASM_MODULE_NAME : &str = "prerenderer";
 
 // function to be called as entrypoint
 const PRERENDERER_WASM_MODULE_ENTRYPOINT : &str = "_start";
-
-// command name for setting canvas size
-const CMD_RENDER_WIDTH : &str = "set_render_width";
 
 #[derive(Clone, Debug)]
 pub enum CanvasRPC {
@@ -110,46 +104,11 @@ pub async fn run_wasm(file: &str) -> anyhow::Result<()> {
     println!("creating vm...");
     let vm = vm(file, tx.clone())?;
 
-    // todo: pass path or json of input score here
-    println!("running prerenderer...");
-    let handle = thread::spawn(move|| {
-        let results = vm.run_func(
-            Some(PRERENDERER_WASM_MODULE_NAME),
-            PRERENDERER_WASM_MODULE_ENTRYPOINT,
-            params!()
-        );
-
-        assert!(results.is_ok());
-
-        // just to make sure the original thread gets to opening the tx
-        std::thread::sleep(
-            std::time::Duration::from_millis(2000));
-
-        // sadly we have to send an inelegant closing command
-        // because we cannot close from the sending side
-        tx
-            .send(CanvasRPC::Quit)
-            .expect("failed to send loop quit cmd");
-    });
-
-    println!("starting draw command listener loop...");
-    loop {
-        if let Some(cmd) = rx.recv().await {
-            println!("received command: {:?}", &cmd);
-
-            if let CanvasRPC::Quit = &cmd {
-                break;
-            }
-        }
-
-        // empty buffer, close stream
-        else {
-            println!("draw cmd stream ended, all senders dropped or stream empty");
-            break;
-        }
-    }
-
-    handle.join().unwrap();
+    vm.run_func(
+        Some(PRERENDERER_WASM_MODULE_NAME),
+        PRERENDERER_WASM_MODULE_ENTRYPOINT,
+        params!()
+    )?;
 
     Ok(())
 }

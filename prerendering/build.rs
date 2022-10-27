@@ -51,6 +51,9 @@ fn build_wasm() -> WasmEdgeResult<()> {
 
     // tell cargo to invalidate build cache if the _wasm package changes
     println!("cargo:rerun-if-changed=../prerendering_wasm/src/main.rs");
+    println!("cargo:rerun-if-changed=../prerendering_wasm/Cargo.toml");
+    println!("cargo:rerun-if-changed=../prerendering_wasm/build.rs");
+    println!("cargo:rerun-if-changed=../prerendering_wasm/dist/*");
 
     let res = Command::new("make")
         .current_dir("../prerendering_wasm")

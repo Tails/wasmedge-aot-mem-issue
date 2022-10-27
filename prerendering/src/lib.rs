@@ -14,10 +14,14 @@ pub const WASM_BLOB_AOT_PATH: &'static str
 async fn test_interpreted() {
     let interpreted_res = crate::run::run_wasm(
         crate::WASM_BLOB_INTERPRETED_PATH).await;
+
+    assert!(interpreted_res.is_ok())
 }
 
 #[tokio::test]
 async fn test_aot() {
     let aot_res = crate::run::run_wasm(
         crate::WASM_BLOB_AOT_PATH).await;
+
+    assert!(aot_res.is_ok());
 }

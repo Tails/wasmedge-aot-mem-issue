@@ -18,8 +18,10 @@ build: \
 	copy-wasm-bin
 
 build-bin: install-rs
+	echo "building prerendering_wasm from Makefile"
 	cargo build \
 		--target wasm32-wasi \
+		--manifest-path ./Cargo.toml \
 		--release
 
 # https://wasmedge.org/book/en/cli/wasmedgec.html

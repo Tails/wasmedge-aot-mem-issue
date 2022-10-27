@@ -19,6 +19,7 @@ build: \
 
 build-bin: install-rs
 	echo "building prerendering_wasm from Makefile"
+	rm -rf ./dist
 	cargo build \
 		--target wasm32-wasi \
 		--manifest-path ./Cargo.toml \

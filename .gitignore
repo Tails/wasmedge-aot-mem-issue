@@ -1,3 +1,4 @@
 /target/
 /prerendering_wasm/dist/
 /.idea
+*/**/*.so

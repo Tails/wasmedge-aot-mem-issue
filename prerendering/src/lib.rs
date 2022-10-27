@@ -23,11 +23,14 @@ const PRERENDERER_WASM_MODULE_NAME : &str = "prerenderer";
 const PRERENDERER_WASM_MODULE_ENTRYPOINT : &str = "_start";
 
 // todo: resolve this from parture folder helper path util
+// const WASM_BLOB_INTERPRETED_PATH : &str
+// = "../prerendering_wasm/dist/prerendering_wasm.wasm";
+
 const WASM_BLOB_INTERPRETED_PATH : &str
-= "../prerendering_wasm/dist/prerendering_wasm.wasm";
+= "./hello.wasm";
 
 const WASM_BLOB_AOT_PATH : &str
-= "../prerendering_wasm/dist/prerendering_wasm_aot.so";
+= "hello_aot.so";
 
 const OPT_LEVEL: CompilerOptimizationLevel
 = CompilerOptimizationLevel::O0;
@@ -38,7 +41,7 @@ pub fn config() -> Config {
 
     let compiler_options = CompilerConfigOptions::default()
         .dump_ir(false)
-        .generic_binary(true)
+        .generic_binary(false)
         .interruptible(false)
         .optimization_level(OPT_LEVEL)
         .out_format(CompilerOutputFormat::Native)
@@ -59,9 +62,6 @@ pub fn config() -> Config {
 /// produce native optimized binary
 fn compile_sdk() -> WasmEdgeResult<()> {
     println!("compiling AOT wasm binary through Rust SDK...");
-
-    std::fs::create_dir_all("../prerendering_wasm/dist/")
-        .expect("failed to make output dirs");
 
     Compiler::new(Some(&config()))?
         .compile_from_file(

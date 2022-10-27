@@ -3,7 +3,7 @@
 #![feature(never_type)]
 
 use wasmedge_sdk::{error::HostFuncError, Compiler, params, wat2wasm, CallingFrame, Executor, ImportObjectBuilder, Module, Store, WasmValue, config::Config, Vm, AsInstance, CompilerOutputFormat, CompilerOptimizationLevel, WasmEdgeResult, WasmValTypeList, ImportObject};
-use wasmedge_sdk::config::{ConfigBuilder, HostRegistrationConfigOptions, CommonConfigOptions, CompilerConfigOptions};
+use wasmedge_sdk::config::{ConfigBuilder, HostRegistrationConfigOptions, CommonConfigOptions, CompilerConfigOptions, RuntimeConfigOptions};
 use wasmedge_sdk::WasmVal;
 use wasmedge_sys::Memory;
 
@@ -37,7 +37,9 @@ const OPT_LEVEL: CompilerOptimizationLevel
 
 // create vm config
 pub fn config() -> Config {
-    let common_options = CommonConfigOptions::default();
+    let common_options = CommonConfigOptions::default()
+        .multi_memories(true)
+        .threads(true);
 
     let compiler_options = CompilerConfigOptions::default()
         .dump_ir(false)
@@ -53,6 +55,7 @@ pub fn config() -> Config {
     let result = ConfigBuilder::new(common_options)
         .with_host_registration_config(host_reg_options)
         .with_compiler_config(compiler_options)
+        // .with_runtime_config(RuntimeConfigOptions::new().max_memory_pages(10000))
         .build();
 
     assert!(result.is_ok());

@@ -35,8 +35,8 @@ build-bin-aot:
 
 copy-wasm-bin:
 	mkdir -p ./dist
-	cp ../target/wasm32-wasi/release/${WASM_BIN_OUTPUT_NAME}.wasm ./dist/
-	-cp ../target/wasm32-wasi/release/${WASM_BIN_AOT_NAME}.so ./dist/
+	cp -f ../target/wasm32-wasi/release/${WASM_BIN_OUTPUT_NAME}.wasm ./dist/
+	-cp -f ../target/wasm32-wasi/release/${WASM_BIN_AOT_NAME}.so ./dist/
 
 #
 # CONFIG
